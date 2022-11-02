@@ -41,30 +41,41 @@ class _DesktopState extends State<Desktop> {
               DesktopIcon(
                 icon: Image.asset('assets/icons/notes.png'),
                 name: 'Notes',
+                window: const Window(
+                  title: 'Notes',
+                ),
               ),
               DesktopIcon(
                 icon: Image.asset('assets/icons/people.png'),
                 name: 'Contacts',
+                window: const Window(
+                  title: 'Contacts',
+                ),
               ),
               DesktopIcon(
                 icon: Image.asset('assets/icons/events.png'),
                 name: 'Events',
+                window: const Window(title: 'Events'),
               ),
               DesktopIcon(
                 icon: Image.asset('assets/icons/healthtips.png'),
                 name: 'Health tips',
+                window: const Window(title: 'Health Tips'),
               ),
               DesktopIcon(
                 icon: Image.asset('assets/icons/acronyms.png'),
                 name: 'Acronyms',
+                window: const Window(title: 'Acronyms'),
               ),
               DesktopIcon(
                 icon: Image.asset('assets/icons/snippets.png'),
                 name: 'Code Snippets',
+                window: const Window(title: 'Code Snippets'),
               ),
               DesktopIcon(
                 icon: Image.asset('assets/icons/documents.png'),
-                name: 'documents',
+                name: 'Documents',
+                window: const Window(title: 'Documents'),
               ),
             ],
           ),
@@ -88,15 +99,59 @@ class _DesktopState extends State<Desktop> {
   }
 }
 
+class Window extends StatelessWidget {
+  const Window({super.key, this.title});
+
+  final String? title;
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(50.0),
+      child: EmbossedContainer(
+          height: MediaQuery.of(context).size.width,
+          width: MediaQuery.of(context).size.height,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: Container(
+                  height: 20,
+                  width: MediaQuery.of(context).size.width,
+                  color: const Color.fromARGB(255, 9, 21, 122),
+                  child: Row(
+                    children: [
+                      const SizedBox(
+                        width: 12,
+                      ),
+                      Text((title != null) ? title! : 'error: title not set',
+                          style: const TextStyle(color: Colors.white)),
+                      const Spacer(),
+                      const XButton(),
+                      const SizedBox(
+                        width: 3,
+                      )
+                    ],
+                  ),
+                ),
+              )
+            ],
+          )),
+    );
+  }
+}
+
 class DesktopIcon extends StatelessWidget {
   const DesktopIcon({
     Key? key,
     required this.icon,
     required this.name,
+    required this.window,
   }) : super(key: key);
 
   final Widget icon;
   final String name;
+  final Widget window;
 
   static const double labelSpacingTop = 5.0;
   static const double buttonPadding = 14;
@@ -106,16 +161,18 @@ class DesktopIcon extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(buttonPadding),
       child: GestureDetector(
+          onTap: () =>
+              showDialog(context: context, builder: (context) => window),
           child: Column(
-        children: [
-          icon,
-          const SizedBox(height: labelSpacingTop),
-          Text(
-            name,
-            style: const TextStyle(color: Colors.white),
-          ),
-        ],
-      )),
+            children: [
+              icon,
+              const SizedBox(height: labelSpacingTop),
+              Text(
+                name,
+                style: const TextStyle(color: Colors.white),
+              ),
+            ],
+          )),
     );
   }
 }
@@ -171,6 +228,48 @@ class _SettingsButtonState extends State<SettingsButton> {
   }
 }
 
+class XButton extends StatefulWidget {
+  const XButton({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  State<XButton> createState() => _XButtonState();
+}
+
+class _XButtonState extends State<XButton> {
+  bool invert = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: ((details) {
+        setState(() {
+          invert = true;
+        });
+      }),
+      onTapUp: ((details) {
+        setState(() {
+          invert = false;
+        });
+      }),
+      onTap: () => Navigator.pop(context),
+      child: EmbossedContainer(
+          invert: invert,
+          height: 15,
+          width: 15,
+          child: Padding(
+            padding: EdgeInsets.only(top: (invert) ? 1.0 : 0),
+            child: const Center(
+                child: Text(
+              'X',
+              style: TextStyle(fontWeight: FontWeight.w900),
+            )),
+          )),
+    );
+  }
+}
+
 class EmbossedContainer extends StatelessWidget {
   final double height;
   final double width;
@@ -186,8 +285,8 @@ class EmbossedContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color colorA = (invert) ? Colors.black : Colors.white;
-    Color colorB = (!invert) ? Colors.black : Colors.white;
+    Color colorA = (invert) ? Colors.black54 : Colors.white70;
+    Color colorB = (!invert) ? Colors.black54 : Colors.white70;
     return Material(
       shape: Border(
         right: BorderSide(
@@ -210,7 +309,7 @@ class EmbossedContainer extends StatelessWidget {
       child: Container(
           height: height,
           width: width,
-          color: const Color.fromARGB(255, 198, 198, 198),
+          color: const Color.fromARGB(255, 180, 180, 180),
           child: child),
     );
   }
