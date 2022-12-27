@@ -7,6 +7,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:memo_deck/apps/notes.dart';
 import 'package:memo_deck/ui_widgets/buttons.dart';
 import 'package:memo_deck/ui_widgets/containers.dart';
 
@@ -49,12 +50,9 @@ class _DesktopState extends State<Desktop> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               DesktopIcon(
-                icon: Image.asset('assets/icons/notes.png'),
-                name: 'Notes',
-                window: const Window(
-                  title: 'Notes',
-                ),
-              ),
+                  icon: Image.asset('assets/icons/notes.png'),
+                  name: 'Notes',
+                  window: const NotesApp()),
               DesktopIcon(
                 icon: Image.asset('assets/icons/people.png'),
                 name: 'Contacts',
@@ -92,17 +90,35 @@ class _DesktopState extends State<Desktop> {
         ),
         Align(
           alignment: Alignment.bottomLeft,
-          child: EmbossedContainer(
-              height: 30,
-              width: MediaQuery.of(context).size.width,
-              child: Row(
-                children: const [
-                  SizedBox(
-                    width: 5,
-                  ),
-                  SettingsButton(),
-                ],
-              )),
+          child: SizedBox(
+            height: 30,
+            width: MediaQuery.of(context).size.width,
+            child: EmbossedContainer(
+                child: Row(
+              children: [
+                const SizedBox(
+                  width: 5,
+                ),
+                EmbossedButton(
+                    height: 25,
+                    width: 80,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(3.0),
+                          child: Image.asset('assets/icons/mdBiDi.png'),
+                        ),
+                        const Text(
+                          'Settings',
+                          style: TextStyle(fontWeight: FontWeight.w900),
+                        ),
+                      ],
+                    )),
+              ],
+            )),
+          ),
         ),
       ]),
     );

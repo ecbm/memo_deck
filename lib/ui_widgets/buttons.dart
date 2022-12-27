@@ -2,7 +2,7 @@
 
   These button widgets are styled widgets that can be reused for buttony things.
 
-  SettingsButton is your basic windows start button, does nothing yet but it has a nice animation.
+  EmbossedButton is your basic windows start button, does nothing yet but it has a nice animation.
 
   XButton is your stand close button, is animated and will close whatever context it is place in.
 
@@ -13,16 +13,25 @@
 import 'package:flutter/material.dart';
 import 'package:memo_deck/ui_widgets/containers.dart';
 
-class SettingsButton extends StatefulWidget {
-  const SettingsButton({
+class EmbossedButton extends StatefulWidget {
+  const EmbossedButton({
     Key? key,
+    required this.height,
+    required this.width,
+    this.ontap,
+    required this.child,
   }) : super(key: key);
 
+  final double height;
+  final double width;
+  final void Function()? ontap;
+  final Widget child;
+
   @override
-  State<SettingsButton> createState() => _SettingsButtonState();
+  State<EmbossedButton> createState() => _EmbossedButtonState();
 }
 
-class _SettingsButtonState extends State<SettingsButton> {
+class _EmbossedButtonState extends State<EmbossedButton> {
   bool invert = false;
 
   @override
@@ -38,28 +47,17 @@ class _SettingsButtonState extends State<SettingsButton> {
           invert = false;
         });
       }),
-      child: EmbossedContainer(
-          invert: invert,
-          height: 25,
-          width: 80,
-          child: Padding(
-            padding: EdgeInsets.only(top: (invert) ? 1.0 : 0),
-            child: Center(
-                child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(3.0),
-                  child: Image.asset('assets/icons/mdBiDi.png'),
-                ),
-                const Text(
-                  'Settings',
-                  style: TextStyle(fontWeight: FontWeight.w900),
-                ),
-              ],
+      onTap: widget.ontap,
+      child: SizedBox(
+        height: widget.height,
+        width: widget.width,
+        child: EmbossedContainer(
+            invert: invert,
+            child: Padding(
+              padding: EdgeInsets.only(top: (invert) ? 1.0 : 0),
+              child: Center(child: widget.child),
             )),
-          )),
+      ),
     );
   }
 }
@@ -90,18 +88,20 @@ class _XButtonState extends State<XButton> {
         });
       }),
       onTap: () => Navigator.pop(context),
-      child: EmbossedContainer(
-          invert: invert,
-          height: 15,
-          width: 15,
-          child: Padding(
-            padding: EdgeInsets.only(top: (invert) ? 1.0 : 0),
-            child: const Center(
-                child: Text(
-              'X',
-              style: TextStyle(fontWeight: FontWeight.w900),
+      child: SizedBox(
+        height: 15,
+        width: 15,
+        child: EmbossedContainer(
+            invert: invert,
+            child: Padding(
+              padding: EdgeInsets.only(top: (invert) ? 1.0 : 0),
+              child: const Center(
+                  child: Text(
+                'X',
+                style: TextStyle(fontWeight: FontWeight.w900),
+              )),
             )),
-          )),
+      ),
     );
   }
 }
@@ -126,8 +126,12 @@ class DesktopIcon extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(buttonPadding),
       child: GestureDetector(
-          onTap: () =>
-              showDialog(context: context, builder: (context) => window),
+          onTap: () => showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                    content: window,
+                    contentPadding: EdgeInsets.zero,
+                  )),
           child: Column(
             children: [
               icon,
